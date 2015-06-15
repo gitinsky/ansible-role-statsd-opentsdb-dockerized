@@ -1,0 +1,26 @@
+---
+- name: make a build dir
+  file: state=directory name=/root/statsd-opentsdb-dockerized
+
+- name: put Dockerfile
+  template: src=Dockerfile dest=/root/statsd-opentsdb-dockerized/Dockerfile
+
+- name: put start.sh
+  template: src=start.sh dest=/root/statsd-opentsdb-dockerized/start.sh mode=0755
+
+- name: build a Docker image for StatsD-OpenTSDB
+  docker_image:
+    path:  /root/statsd-opentsdb-dockerized
+    name:  gitinsky/statsd-opentsdb
+    tag:   0.1.0
+    state: present
+  tags:
+    - docker
+
+- name: tag it as latest
+  docker_image:
+    path:  /root/statsd-opentsdb-dockerized
+    name:  gitinsky/statsd-opentsdb
+    state: build
+  tags:
+    - docker
